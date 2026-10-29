@@ -8,7 +8,7 @@ export const site = {
   email: "info@crembers.com",
   // WhatsApp number in international format, digits only (no +, no spaces).
   // Empty string hides the WhatsApp button. Fill when the line is live.
-  whatsapp: "",
+  whatsapp: "385916035450",
   // Legal holder shown in the footer. Empty until confirmed.
   legalHolder: "",
   // Base of operations shown in copy.

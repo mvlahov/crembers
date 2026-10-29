@@ -61,8 +61,7 @@ Vercel, production branch `main`, same as plutamo/elementame.
 
 1. Landing copy still says "the top five matches are contacted" — the bot now
    contacts every match; align the text (or cap the broadcast).
-2. Set `site.whatsapp` in `lib/site.ts` once the number is live on the API.
-3. Legal holder in `lib/site.ts`, privacy policy and terms before collecting data.
+2. Legal holder in `lib/site.ts`, privacy policy and terms before collecting data.
 
 ## WhatsApp bot
 
@@ -145,6 +144,10 @@ To change a question, add a language or a licence / boat type, edit `forms.ts` a
 6. **Webhook:** in the app → WhatsApp → Configuration set the callback URL to
    `https://crembers.com/api/whatsapp`, the verify token from step 3, and
    subscribe to the **messages** field.
+
+The bot's number is +385 91 6035 450 (`site.whatsapp` in `lib/site.ts`, used for
+the WhatsApp button on the landing page). `ADMIN_PHONE` must be a *different*
+number — the bot cannot message itself.
 
 Your data lives in your own database — browse it in the Neon console (tables
 `skippers`, `charters`, `offers`, `offer_recipients`).
