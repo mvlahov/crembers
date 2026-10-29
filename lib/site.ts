@@ -16,7 +16,7 @@ export const site = {
   legalAddress: "Trnjanska cesta 71, 10000 Zagreb, Hrvatska",
   legalMbo: "97795950",
   // OIB (11 digits). Empty hides it.
-  legalOib: "",
+  legalOib: "75547275072",
   legalSite: "https://tuedos.com",
   // Base of operations shown in copy.
   region: "Croatia · Adriatic",
