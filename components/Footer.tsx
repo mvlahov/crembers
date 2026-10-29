@@ -19,8 +19,20 @@ export default function Footer({ dict, locale }: { dict: Dict; locale: Locale })
             {site.email}
           </a>
           <p className="mt-2">
-            © {year} {site.legalHolder || site.name}. {dict.footer.rights}
+            © {year} {site.name}. {dict.footer.rights}
           </p>
+          {site.legalHolder && (
+            <p className="mt-2 max-w-md text-xs sm:ml-auto">
+              {dict.footer.brandOf}{" "}
+              <a href={site.legalSite} className="underline hover:text-deep">
+                {site.legalHolder}
+              </a>
+              {" · "}
+              {site.legalAddress}
+              {site.legalOib && ` · OIB ${site.legalOib}`}
+              {` · MBO ${site.legalMbo}`}
+            </p>
+          )}
         </div>
       </div>
     </footer>

@@ -54,6 +54,7 @@ export type Dict = {
   footer: {
     tagline: string;
     rights: string;
+    brandOf: string;
   };
 };
 
@@ -164,6 +165,7 @@ const en: Dict = {
   footer: {
     tagline: "Skipper matching for the Adriatic and beyond.",
     rights: "All rights reserved.",
+    brandOf: "Crembers is a brand of",
   },
 };
 
@@ -274,6 +276,7 @@ const hr: Dict = {
   footer: {
     tagline: "Uparivanje skipera za Jadran i šire.",
     rights: "Sva prava pridržana.",
+    brandOf: "Crembers je brend obrta",
   },
 };
 
@@ -384,6 +387,7 @@ const de: Dict = {
   footer: {
     tagline: "Skipper-Vermittlung für die Adria und darüber hinaus.",
     rights: "Alle Rechte vorbehalten.",
+    brandOf: "Crembers ist eine Marke von",
   },
 };
 
