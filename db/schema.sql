@@ -83,6 +83,21 @@ create table if not exists processed_messages (
   created_at timestamptz not null default now()
 );
 
+-- Every message in and out, for the admin inbox (/admin).
+create table if not exists messages (
+  id         serial primary key,
+  phone      text not null references contacts (phone) on delete cascade,
+  direction  text not null check (direction in ('in', 'out')),
+  author     text not null check (author in ('user', 'bot', 'admin')),
+  body       text not null,
+  created_at timestamptz not null default now()
+);
+
+-- Admin inbox: human = the owner took over the chat, the bot stays silent.
+alter table contacts add column if not exists human boolean not null default false;
+alter table contacts add column if not exists admin_read_at timestamptz;
+
+create index if not exists messages_phone_idx on messages (phone, id);
 create index if not exists offers_charter_idx on offers (charter_phone, created_at desc);
 create index if not exists recipients_skipper_idx on offer_recipients (skipper_phone);
 create index if not exists outbox_phone_idx on outbox (phone, id);

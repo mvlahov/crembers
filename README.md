@@ -94,6 +94,8 @@ Typed commands in any state: `MENU` / `IZBORNIK`, `DELETE` / `OBRIŠI`.
 
 ```
 app/api/whatsapp/route.ts   webhook (Meta calls it for every incoming message)
+app/admin/                  admin inbox (login, conversation list, chat)
+lib/admin/                  inbox login + queries
 lib/bot/
   engine.ts      conversation flow, matching, broadcasting
   forms.ts       the CV / company / request questions + answer validation
@@ -151,6 +153,24 @@ number — the bot cannot message itself.
 
 Your data lives in your own database — browse it in the Neon console (tables
 `skippers`, `charters`, `offers`, `offer_recipients`).
+
+### Admin inbox — `/admin`
+
+`https://crembers.com/admin`, password = `ADMIN_PASSWORD`. Every message in and out
+is stored (`messages` table), so you see each conversation as a chat, with the
+skipper's CV or the company's requests beside it. The page refreshes by itself.
+
+- **Reply** from the box at the bottom. Sending a reply **takes the chat over**:
+  the bot stops answering that person (badge *Preuzet*) until you press
+  **Vrati botu**. You can also take over without writing (*Preuzmi razgovor*).
+- Offers and CVs still go out to taken-over people as usual; only the bot's
+  answers to what they write are paused.
+- WhatsApp's 24-hour rule applies to you too: you can write freely only within
+  24 hours of that person's last message. After that the reply box is disabled.
+- Conversations before this feature was deployed have no stored history.
+
+After updating, run `npm run db:migrate` once more — it adds the new table and
+columns and leaves existing data alone.
 
 ### Trying it without WhatsApp
 

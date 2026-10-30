@@ -166,6 +166,20 @@ async function main() {
   assert.equal((await inbound(A, "hi", "wamid.dup")).length, 0, "same message id is ignored");
   assert.equal((await q(`select count(*)::int n from processed_messages`))[0].n, before + 1);
 
+  // ── message history + admin takeover ──
+  const logged = await q(`select direction, author, body from messages where phone = $1 order by id`, [A]);
+  assert.ok(logged.some((m) => m.direction === "in" && m.author === "user" && m.body === "Ante Anić"));
+  assert.ok(logged.some((m) => m.direction === "in" && m.body === "▸ offer:accept:1"));
+  assert.ok(logged.some((m) => m.direction === "out" && m.author === "bot" && /applied for offer #1/.test(m.body)));
+  assert.ok((await q(`select 1 from messages where phone = $1 and body like '📨 Template:%'`, [X])).length, "template logged");
+  await q(`update contacts set human = true where phone = $1`, [A]);
+  out = await say(A, "Can I ask you something?");
+  assert.equal(out.length, 0, "bot is silent while the owner has the chat");
+  assert.equal((await q(`select body from messages where phone = $1 order by id desc limit 1`, [A]))[0].body, "Can I ask you something?");
+  await q(`update contacts set human = false where phone = $1`, [A]);
+  out = await say(A, "menu");
+  assert.ok(out.length > 0, "bot answers again");
+
   // ── delete ──
   out = await say(B, "Obriši");
   assert.deepEqual(ids(out[0]), ["del:yes", "del:no"]);

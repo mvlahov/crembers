@@ -19,7 +19,7 @@ setTransport(async (to, payload) => {
 });
 
 export async function resetDb() {
-  await q(`drop table if exists processed_messages, outbox, offer_recipients, offers, charters, skippers, contacts cascade`);
+  await q(`drop table if exists messages, processed_messages, outbox, offer_recipients, offers, charters, skippers, contacts cascade`);
   await q(readFileSync("db/schema.sql", "utf8"));
 }
 
@@ -28,7 +28,7 @@ let seq = 0;
 export async function inbound(from: string, input: string, id = `wamid.${process.pid}.${Date.now()}.${++seq}`): Promise<Sent[]> {
   const start = sent.length;
   const tap = input.match(/^\[(.+)\]$/);
-  await handleInbound({ id, from, name: `User ${from.slice(-3)}`, ...(tap ? { reply: tap[1] } : { text: input }) });
+  await handleInbound({ id, from, name: `User ${from.slice(-3)}`, ...(tap ? { reply: tap[1], label: tap[1] } : { text: input }) });
   return sent.slice(start);
 }
 

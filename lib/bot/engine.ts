@@ -8,7 +8,7 @@ import { dates, formatCv, formatOffer, type Offer, type Skipper } from "./format
 import { ask, CHARTER_FORM, CV_FORM, FORMS, parse, showDate, type FormId } from "./forms";
 import { deliver, eachLimit, flushOutbox } from "./outbound";
 import { asLang, command, t, type Lang } from "./texts";
-import { NOTIFY_PAYLOAD, send, type Inbound, type Out } from "./whatsapp";
+import { logMessage, NOTIFY_PAYLOAD, send, type Inbound, type Out } from "./whatsapp";
 
 type Role = "skipper" | "charter";
 type FormState = { form: FormId; i: number; draft: Record<string, unknown>; only?: string; offerId?: number };
@@ -19,6 +19,7 @@ type Contact = {
   role: Role | null;
   state: string;
   state_data: any;
+  human?: boolean;
 };
 
 const L = (c: Contact): Lang => asLang(c.lang);
@@ -49,12 +50,15 @@ export async function handleInbound(m: Inbound): Promise<void> {
   const [c] = await q<Contact>(
     `insert into contacts (phone, name, last_inbound_at) values ($1, $2, now())
      on conflict (phone) do update set name = coalesce(excluded.name, contacts.name), last_inbound_at = now()
-     returning phone, name, lang, role, state, state_data`,
+     returning phone, name, lang, role, state, state_data, human`,
     [m.from, m.name ?? null],
   );
+  await logMessage(c.phone, "in", "user", m.text ?? (m.reply ? `▸ ${m.label ?? m.reply}` : `[${m.media ?? "?"}]`));
 
   try {
     const hadQueued = await flushOutbox(c.phone);
+    // The owner took this chat over in the admin inbox: the bot stays silent.
+    if (c.human) return;
     if (m.reply === NOTIFY_PAYLOAD) {
       if (!hadQueued) await showMenu(c);
       return;
